@@ -1,4 +1,4 @@
-function ProductCard({ name, price, stock, image }) {
+function ProductCard({ name, price, stock, image, onAddToCart }) {
     return (
         <article className="product-card">
             <img src={image} alt={name} />
@@ -7,7 +7,7 @@ function ProductCard({ name, price, stock, image }) {
             <p>In Stock: {stock}</p>
 
             {stock > 0 ? (
-                <button className="primary-button" type="button">
+                <button className="primary-button" type="button" onClick={() => onAddToCart(name)}>
                     Add to Cart
                 </button>
             ) : (

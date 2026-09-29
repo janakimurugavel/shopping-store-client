@@ -1,4 +1,4 @@
-import useState from "react";
+import { useState } from "react";
 import ProductCard from "../components/ProductCard";
 function Home() {
     const storeName = "JanuShop";
@@ -34,9 +34,11 @@ function Home() {
             image: "/smart-watch.webp"
         }
     ]
-   function handleAddToCart() {
-    
-   }
+    function handleAddToCart(productName) {
+        setCartCount(cartCount + 1);
+        console.log(`${productName} added to cart. Total items in cart: ${cartCount + 1}`);
+
+    }
     return (
         <section className="hero">
             <p className="hero-label">WELCOME to {storeName}!</p>
@@ -46,7 +48,7 @@ function Home() {
             <p>
                 we have {productCount} products available for you to explore.
             </p>
-
+            <p> cart items: {cartCount}</p>
             <button className="primary-button" type="button">
                 Explore Products
             </button>
@@ -59,6 +61,7 @@ function Home() {
                         price={product.price}
                         stock={product.stock}
                         image={product.image}
+                        onAddToCart={handleAddToCart}
                     />
                 ))}
             </div>
