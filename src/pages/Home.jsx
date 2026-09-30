@@ -3,8 +3,7 @@ import ProductCard from "../components/ProductCard";
 function Home() {
     const storeName = "JanuShop";
     const productCount = 3;
-    const [cartCount, setCartCount] = useState(0);
-    const products = [
+    const initialProducts = [
         {
             id: 1,
             name: "iPhone",
@@ -34,10 +33,21 @@ function Home() {
             image: "/smart-watch.webp"
         }
     ]
-    function handleAddToCart(productName) {
-        setCartCount(cartCount + 1);
-        console.log(`${productName} added to cart. Total items in cart: ${cartCount + 1}`);
-
+    const [products, setProducts] = useState(initialProducts);
+    const [cartCount, setCartCount] = useState(0);
+    function handleAddToCart(id) {
+        const selectedProduct = products.find((product) => product.id === id);
+        if (!selectedProduct || selectedProduct.stock <= 0) {
+            console.log("Product is out of stock or not found.");
+            return;
+        }
+        setCartCount((cartCount) => cartCount + 1);
+        console.log(`${selectedProduct.name} added to cart. Total items in cart: ${cartCount + 1}`);
+        setProducts((prevProducts) =>
+            prevProducts.map((product) =>
+                product.id === id ? { ...product, stock: product.stock - 1 } : product
+            )
+        );
     }
     return (
         <section className="hero">
@@ -61,7 +71,7 @@ function Home() {
                         price={product.price}
                         stock={product.stock}
                         image={product.image}
-                        onAddToCart={handleAddToCart}
+                        onAddToCart={() => handleAddToCart(product.id)}
                     />
                 ))}
             </div>
