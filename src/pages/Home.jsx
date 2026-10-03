@@ -1,42 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { getAllProducts } from "../services/productService";
+
 function Home() {
     const storeName = "JanuShop";
     const productCount = 3;
-    const initialProducts = [
-        {
-            id: 1,
-            name: "iPhone",
-            price: 70000,
-            stock: 10,
-            image: "/iphone.webp"
-        },
-        {
-            id: 2,
-            name: "Laptop",
-            price: 55000,
-            stock: 5,
-            image: "/laptop.webp"
-        },
-        {
-            id: 3,
-            name: "Headphones",
-            price: 3000,
-            stock: 0,
-            image: "/headphone.webp"
-        },
-        {
-            id: 4,
-            name: "Smart Watch",
-            price: 3000,
-            stock: 10,
-            image: "/smart-watch.webp"
-        }
-    ]
-    const [products, setProducts] = useState(initialProducts);
+    const [products, setProducts] = useState([]);
     const [cartCount, setCartCount] = useState(0);
-    function handleAddToCart(id) {
-        const selectedProduct = products.find((product) => product.id === id);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    function handleAddToCart(productId) {
+        const selectedProduct = products.find((product) => product._id === productId);
         if (!selectedProduct || selectedProduct.stock <= 0) {
             console.log("Product is out of stock or not found.");
             return;
@@ -45,10 +20,30 @@ function Home() {
         console.log(`${selectedProduct.name} added to cart. Total items in cart: ${cartCount + 1}`);
         setProducts((prevProducts) =>
             prevProducts.map((product) =>
-                product.id === id ? { ...product, stock: product.stock - 1 } : product
+                product._id === productId ? { ...product, stock: product.stock - 1 } : product
             )
         );
     }
+
+    async function getProducts() {
+        try {
+            setLoading(true);
+            setError("");
+
+            const productData = await getAllProducts();
+
+            setProducts(productData);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        getProducts();
+    }, []);
+
     return (
         <section className="hero">
             <p className="hero-label">WELCOME to {storeName}!</p>
@@ -62,19 +57,30 @@ function Home() {
             <button className="primary-button" type="button">
                 Explore Products
             </button>
+            {loading && <p>Products are loading...</p>}
 
-            <div className="product-grid">
-                {products.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        name={product.name}
-                        price={product.price}
-                        stock={product.stock}
-                        image={product.image}
-                        onAddToCart={() => handleAddToCart(product.id)}
-                    />
-                ))}
-            </div>
+            {error && <p className="error-message">{error}</p>}
+
+            {
+                !loading && !error && products.length === 0 && (
+                    <p>No products found.</p>
+                )
+            }
+
+            {!loading && !error && (
+                <div className="product-grid">
+                    {products.map((product) => (
+                        <ProductCard
+                            key={product._id}
+                            name={product.name}
+                            price={product.price}
+                            stock={product.stock}
+                            image={product.image}
+                            onAddToCart={() => handleAddToCart(product._id)}
+                        />
+                    ))}
+                </div>
+            )}
         </section>
     );
 }

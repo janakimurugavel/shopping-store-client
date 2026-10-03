@@ -7,7 +7,11 @@ function ProductCard({ name, price, stock, image, onAddToCart }) {
             <p>In Stock: {stock}</p>
 
             {stock > 0 ? (
-                <button className="primary-button" type="button" onClick={() => onAddToCart(name)}>
+                <button
+                    className="primary-button"
+                    type="button"
+                    onClick={onAddToCart}
+                >
                     Add to Cart
                 </button>
             ) : (
