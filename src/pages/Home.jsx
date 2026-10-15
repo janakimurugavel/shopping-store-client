@@ -32,6 +32,7 @@ function Home() {
 
             const productData = await getAllProducts();
 
+
             setProducts(productData);
         } catch (error) {
             setError(error.message);
