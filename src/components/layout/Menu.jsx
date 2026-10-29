@@ -1,12 +1,16 @@
+import { NavLink } from "react-router-dom";
 function Menu() {
     return (
         <nav className="menu" aria-label="Main menu">
-            <button type="button">Home</button>
-            <button type="button">Products</button>
-            <button type="button">Categories</button>
-            <button type="button">Cart</button>
-            <button type="button">Login</button>
+            <NavLink to="/" end> Home</NavLink>
+            <NavLink to="/login">
+                Login
+            </NavLink>
+            <NavLink to="/register">
+                Register
+            </NavLink>
         </nav>
+
     );
 }
 
